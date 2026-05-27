@@ -495,6 +495,27 @@ where
 
         Ok(())
     }
+
+    /// Display defined area
+    pub fn display_partial_frame(
+        &mut self,
+        spi: &mut SPI,
+        delay: &mut DELAY,
+        x: u32,
+        y: u32,
+        width: u32,
+        height: u32,
+    ) -> Result<(), SPI::Error> {
+        self.wait_until_idle(spi, delay)?;
+        self.turn_on_if_turned_off(spi, delay)?;
+
+        self.set_partial_mode(spi, delay)?;
+        self.set_partial_window(spi, delay, x, y, width, height)?;
+
+        self.command(spi, Command::DisplayRefresh)?;
+        self.wait_until_idle(spi, delay)?;
+        Ok(())
+    }
 }
 
 fn is_window_size_ok(x: u32, y: u32, width: u32, height: u32) -> bool {
